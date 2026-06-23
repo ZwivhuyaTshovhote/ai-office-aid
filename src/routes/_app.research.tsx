@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { researchTopic } from "@/lib/ai.functions";
+import { logActivity } from "@/lib/local-store";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -32,6 +33,7 @@ function Research() {
     try {
       const r = await fn({ data: { topic } });
       setResult(r);
+      logActivity("research", topic.slice(0, 80));
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Failed to research");
     } finally {
