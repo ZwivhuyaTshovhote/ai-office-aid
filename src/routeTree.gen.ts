@@ -9,23 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthenticatedResearchRouteImport } from './routes/_authenticated/research'
-import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
-import { Route as AuthenticatedPlannerRouteImport } from './routes/_authenticated/planner'
-import { Route as AuthenticatedGuidelinesRouteImport } from './routes/_authenticated/guidelines'
-import { Route as AuthenticatedEmailRouteImport } from './routes/_authenticated/email'
-import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AppResearchRouteImport } from './routes/_app.research'
+import { Route as AppPlannerRouteImport } from './routes/_app.planner'
+import { Route as AppGuidelinesRouteImport } from './routes/_app.guidelines'
+import { Route as AppEmailRouteImport } from './routes/_app.email'
+import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
 
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
-  id: '/_authenticated',
+const AppRoute = AppRouteImport.update({
+  id: '/_app',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -33,123 +26,92 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedResearchRoute = AuthenticatedResearchRouteImport.update({
+const AppResearchRoute = AppResearchRouteImport.update({
   id: '/research',
   path: '/research',
-  getParentRoute: () => AuthenticatedRouteRoute,
+  getParentRoute: () => AppRoute,
 } as any)
-const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedPlannerRoute = AuthenticatedPlannerRouteImport.update({
+const AppPlannerRoute = AppPlannerRouteImport.update({
   id: '/planner',
   path: '/planner',
-  getParentRoute: () => AuthenticatedRouteRoute,
+  getParentRoute: () => AppRoute,
 } as any)
-const AuthenticatedGuidelinesRoute = AuthenticatedGuidelinesRouteImport.update({
+const AppGuidelinesRoute = AppGuidelinesRouteImport.update({
   id: '/guidelines',
   path: '/guidelines',
-  getParentRoute: () => AuthenticatedRouteRoute,
+  getParentRoute: () => AppRoute,
 } as any)
-const AuthenticatedEmailRoute = AuthenticatedEmailRouteImport.update({
+const AppEmailRoute = AppEmailRouteImport.update({
   id: '/email',
   path: '/email',
-  getParentRoute: () => AuthenticatedRouteRoute,
+  getParentRoute: () => AppRoute,
 } as any)
-const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+const AppDashboardRoute = AppDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
-  getParentRoute: () => AuthenticatedRouteRoute,
+  getParentRoute: () => AppRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
-  '/dashboard': typeof AuthenticatedDashboardRoute
-  '/email': typeof AuthenticatedEmailRoute
-  '/guidelines': typeof AuthenticatedGuidelinesRoute
-  '/planner': typeof AuthenticatedPlannerRoute
-  '/profile': typeof AuthenticatedProfileRoute
-  '/research': typeof AuthenticatedResearchRoute
+  '/dashboard': typeof AppDashboardRoute
+  '/email': typeof AppEmailRoute
+  '/guidelines': typeof AppGuidelinesRoute
+  '/planner': typeof AppPlannerRoute
+  '/research': typeof AppResearchRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
-  '/dashboard': typeof AuthenticatedDashboardRoute
-  '/email': typeof AuthenticatedEmailRoute
-  '/guidelines': typeof AuthenticatedGuidelinesRoute
-  '/planner': typeof AuthenticatedPlannerRoute
-  '/profile': typeof AuthenticatedProfileRoute
-  '/research': typeof AuthenticatedResearchRoute
+  '/dashboard': typeof AppDashboardRoute
+  '/email': typeof AppEmailRoute
+  '/guidelines': typeof AppGuidelinesRoute
+  '/planner': typeof AppPlannerRoute
+  '/research': typeof AppResearchRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
-  '/auth': typeof AuthRoute
-  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
-  '/_authenticated/email': typeof AuthenticatedEmailRoute
-  '/_authenticated/guidelines': typeof AuthenticatedGuidelinesRoute
-  '/_authenticated/planner': typeof AuthenticatedPlannerRoute
-  '/_authenticated/profile': typeof AuthenticatedProfileRoute
-  '/_authenticated/research': typeof AuthenticatedResearchRoute
+  '/_app': typeof AppRouteWithChildren
+  '/_app/dashboard': typeof AppDashboardRoute
+  '/_app/email': typeof AppEmailRoute
+  '/_app/guidelines': typeof AppGuidelinesRoute
+  '/_app/planner': typeof AppPlannerRoute
+  '/_app/research': typeof AppResearchRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/auth'
     | '/dashboard'
     | '/email'
     | '/guidelines'
     | '/planner'
-    | '/profile'
     | '/research'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/auth'
-    | '/dashboard'
-    | '/email'
-    | '/guidelines'
-    | '/planner'
-    | '/profile'
-    | '/research'
+  to: '/' | '/dashboard' | '/email' | '/guidelines' | '/planner' | '/research'
   id:
     | '__root__'
     | '/'
-    | '/_authenticated'
-    | '/auth'
-    | '/_authenticated/dashboard'
-    | '/_authenticated/email'
-    | '/_authenticated/guidelines'
-    | '/_authenticated/planner'
-    | '/_authenticated/profile'
-    | '/_authenticated/research'
+    | '/_app'
+    | '/_app/dashboard'
+    | '/_app/email'
+    | '/_app/guidelines'
+    | '/_app/planner'
+    | '/_app/research'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthRoute: typeof AuthRoute
+  AppRoute: typeof AppRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated': {
-      id: '/_authenticated'
+    '/_app': {
+      id: '/_app'
       path: ''
       fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -159,76 +121,65 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/research': {
-      id: '/_authenticated/research'
+    '/_app/research': {
+      id: '/_app/research'
       path: '/research'
       fullPath: '/research'
-      preLoaderRoute: typeof AuthenticatedResearchRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      preLoaderRoute: typeof AppResearchRouteImport
+      parentRoute: typeof AppRoute
     }
-    '/_authenticated/profile': {
-      id: '/_authenticated/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof AuthenticatedProfileRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/planner': {
-      id: '/_authenticated/planner'
+    '/_app/planner': {
+      id: '/_app/planner'
       path: '/planner'
       fullPath: '/planner'
-      preLoaderRoute: typeof AuthenticatedPlannerRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      preLoaderRoute: typeof AppPlannerRouteImport
+      parentRoute: typeof AppRoute
     }
-    '/_authenticated/guidelines': {
-      id: '/_authenticated/guidelines'
+    '/_app/guidelines': {
+      id: '/_app/guidelines'
       path: '/guidelines'
       fullPath: '/guidelines'
-      preLoaderRoute: typeof AuthenticatedGuidelinesRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      preLoaderRoute: typeof AppGuidelinesRouteImport
+      parentRoute: typeof AppRoute
     }
-    '/_authenticated/email': {
-      id: '/_authenticated/email'
+    '/_app/email': {
+      id: '/_app/email'
       path: '/email'
       fullPath: '/email'
-      preLoaderRoute: typeof AuthenticatedEmailRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      preLoaderRoute: typeof AppEmailRouteImport
+      parentRoute: typeof AppRoute
     }
-    '/_authenticated/dashboard': {
-      id: '/_authenticated/dashboard'
+    '/_app/dashboard': {
+      id: '/_app/dashboard'
       path: '/dashboard'
       fullPath: '/dashboard'
-      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      preLoaderRoute: typeof AppDashboardRouteImport
+      parentRoute: typeof AppRoute
     }
   }
 }
 
-interface AuthenticatedRouteRouteChildren {
-  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
-  AuthenticatedEmailRoute: typeof AuthenticatedEmailRoute
-  AuthenticatedGuidelinesRoute: typeof AuthenticatedGuidelinesRoute
-  AuthenticatedPlannerRoute: typeof AuthenticatedPlannerRoute
-  AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
-  AuthenticatedResearchRoute: typeof AuthenticatedResearchRoute
+interface AppRouteChildren {
+  AppDashboardRoute: typeof AppDashboardRoute
+  AppEmailRoute: typeof AppEmailRoute
+  AppGuidelinesRoute: typeof AppGuidelinesRoute
+  AppPlannerRoute: typeof AppPlannerRoute
+  AppResearchRoute: typeof AppResearchRoute
 }
 
-const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
-  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
-  AuthenticatedEmailRoute: AuthenticatedEmailRoute,
-  AuthenticatedGuidelinesRoute: AuthenticatedGuidelinesRoute,
-  AuthenticatedPlannerRoute: AuthenticatedPlannerRoute,
-  AuthenticatedProfileRoute: AuthenticatedProfileRoute,
-  AuthenticatedResearchRoute: AuthenticatedResearchRoute,
+const AppRouteChildren: AppRouteChildren = {
+  AppDashboardRoute: AppDashboardRoute,
+  AppEmailRoute: AppEmailRoute,
+  AppGuidelinesRoute: AppGuidelinesRoute,
+  AppPlannerRoute: AppPlannerRoute,
+  AppResearchRoute: AppResearchRoute,
 }
 
-const AuthenticatedRouteRouteWithChildren =
-  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
-  AuthRoute: AuthRoute,
+  AppRoute: AppRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

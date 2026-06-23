@@ -1,42 +1,34 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Mail, CalendarCheck, Search, Sparkles, ArrowUpRight, FileText } from "lucide-react";
 
-export const Route = createFileRoute("/_authenticated/dashboard")({
+export const Route = createFileRoute("/_app/dashboard")({
   component: Dashboard,
 });
 
 type Stats = { emails: number; tasksDone: number; research: number };
 type Activity = { id: string; kind: string; title: string; created_at: string };
 
+type Task = { id: string; title: string; status: "pending" | "completed" };
+
 function Dashboard() {
   const [stats, setStats] = useState<Stats>({ emails: 0, tasksDone: 0, research: 0 });
   const [recent, setRecent] = useState<Activity[]>([]);
-  const [name, setName] = useState<string>("");
 
   useEffect(() => {
-    (async () => {
-      const { data: userData } = await supabase.auth.getUser();
-      const user = userData.user;
-      if (!user) return;
-      setName((user.user_metadata?.full_name as string) || user.email?.split("@")[0] || "there");
-
-      const [emails, research, tasksDone, activity] = await Promise.all([
-        supabase.from("activity_log").select("id", { count: "exact", head: true }).eq("kind", "email"),
-        supabase.from("activity_log").select("id", { count: "exact", head: true }).eq("kind", "research"),
-        supabase.from("tasks").select("id", { count: "exact", head: true }).eq("status", "completed"),
-        supabase.from("activity_log").select("id,kind,title,created_at").order("created_at", { ascending: false }).limit(6),
-      ]);
+    try {
+      const activity: Activity[] = JSON.parse(localStorage.getItem("ws_activity") || "[]");
+      const tasks: Task[] = JSON.parse(localStorage.getItem("ws_tasks") || "[]");
       setStats({
-        emails: emails.count ?? 0,
-        research: research.count ?? 0,
-        tasksDone: tasksDone.count ?? 0,
+        emails: activity.filter((a) => a.kind === "email").length,
+        research: activity.filter((a) => a.kind === "research").length,
+        tasksDone: tasks.filter((t) => t.status === "completed").length,
       });
-      setRecent((activity.data as Activity[]) ?? []);
-    })();
+      setRecent(activity.slice(0, 6));
+    } catch {
+      /* ignore */
+    }
   }, []);
 
   const cards = [
@@ -60,7 +52,7 @@ function Dashboard() {
           <span className="inline-flex w-fit items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs backdrop-blur">
             <Sparkles className="h-3 w-3" /> WorkSmart AI Assistant
           </span>
-          <h1 className="text-3xl md:text-4xl font-bold">Welcome back, {name}.</h1>
+          <h1 className="text-3xl md:text-4xl font-bold">Welcome to WorkSmart.</h1>
           <p className="text-white/70 max-w-xl">Automate the repetitive parts of your day. Generate emails, plan tasks, and summarize information — responsibly.</p>
         </div>
       </section>
@@ -75,7 +67,7 @@ function Dashboard() {
               </div>
             </div>
             <p className="mt-4 text-3xl font-bold">{c.value}</p>
-            <p className="mt-1 text-xs text-muted-foreground">All-time across your workspace</p>
+            <p className="mt-1 text-xs text-muted-foreground">Saved locally in your browser</p>
           </Card>
         ))}
       </section>

@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { generateEmail } from "@/lib/ai.functions";
+import { logActivity } from "@/lib/local-store";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -17,7 +18,7 @@ import {
 import { Loader2, Copy, RefreshCw, Mail, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/_authenticated/email")({
+export const Route = createFileRoute("/_app/email")({
   component: EmailGenerator,
 });
 
@@ -37,6 +38,7 @@ function EmailGenerator() {
     try {
       const r = await fn({ data: { purpose, audience, tone } });
       setResult(r);
+      logActivity("email", r.subject || "Email generated");
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Failed to generate");
     } finally {

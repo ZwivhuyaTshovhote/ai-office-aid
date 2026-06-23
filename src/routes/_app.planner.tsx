@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { planTasks } from "@/lib/ai.functions";
-import { supabase } from "@/integrations/supabase/client";
+import { logActivity } from "@/lib/local-store";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,14 +20,13 @@ import {
 import { CalendarCheck, Plus, Loader2, Sparkles, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/_authenticated/planner")({
+export const Route = createFileRoute("/_app/planner")({
   component: Planner,
 });
 
 type Task = {
   id: string;
   title: string;
-  description: string | null;
   deadline: string | null;
   priority: "low" | "medium" | "high";
   status: "pending" | "completed";
@@ -38,6 +37,20 @@ const priorityColor: Record<Task["priority"], string> = {
   medium: "bg-warning/15 text-warning-foreground border-warning/30",
   low: "bg-success/15 text-success-foreground border-success/30",
 };
+
+const STORAGE_KEY = "ws_tasks";
+
+function loadTasks(): Task[] {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function saveTasks(tasks: Task[]) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+}
 
 function Planner() {
   const fn = useServerFn(planTasks);
@@ -50,45 +63,38 @@ function Planner() {
   const [cursor, setCursor] = useState(new Date());
   const [view, setView] = useState<"month" | "week" | "day">("month");
 
-  const load = async () => {
-    const { data } = await supabase.from("tasks").select("*").order("deadline", { ascending: true });
-    setTasks((data as Task[]) ?? []);
-  };
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    setTasks(loadTasks());
+  }, []);
 
-  const addTask = async (e: React.FormEvent) => {
+  const persist = (next: Task[]) => {
+    setTasks(next);
+    saveTasks(next);
+  };
+
+  const addTask = (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) return;
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-    const { error } = await supabase.from("tasks").insert({
-      user_id: user.id,
+    const t: Task = {
+      id: crypto.randomUUID(),
       title: title.trim(),
       deadline: deadline ? new Date(deadline).toISOString() : null,
       priority,
-    });
-    if (error) return toast.error(error.message);
+      status: "pending",
+    };
+    persist([...tasks, t].sort((a, b) => (a.deadline || "").localeCompare(b.deadline || "")));
     setTitle(""); setDeadline(""); setPriority("medium");
     toast.success("Task added");
-    load();
   };
 
-  const toggleDone = async (t: Task) => {
+  const toggleDone = (t: Task) => {
     const next = t.status === "completed" ? "pending" : "completed";
-    await supabase.from("tasks").update({ status: next }).eq("id", t.id);
-    if (next === "completed") {
-      await supabase.from("activity_log").insert({
-        user_id: (await supabase.auth.getUser()).data.user!.id,
-        kind: "task",
-        title: t.title,
-      });
-    }
-    load();
+    persist(tasks.map((x) => (x.id === t.id ? { ...x, status: next } : x)));
+    if (next === "completed") logActivity("task", t.title);
   };
 
-  const removeTask = async (id: string) => {
-    await supabase.from("tasks").delete().eq("id", id);
-    load();
+  const removeTask = (id: string) => {
+    persist(tasks.filter((t) => t.id !== id));
   };
 
   const runPlan = async () => {
@@ -113,7 +119,6 @@ function Planner() {
     }
   };
 
-  // Calendar grid
   const grid = useMemo(() => {
     const start = new Date(cursor.getFullYear(), cursor.getMonth(), 1);
     const startDay = start.getDay();
