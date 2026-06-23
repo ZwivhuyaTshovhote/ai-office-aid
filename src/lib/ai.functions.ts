@@ -1,5 +1,4 @@
 import { createServerFn } from "@tanstack/react-start";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
 
 const EmailInput = z.object({
@@ -49,9 +48,8 @@ async function callGateway(messages: Array<{ role: string; content: string }>, o
 }
 
 export const generateEmail = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => EmailInput.parse(d))
-  .handler(async ({ data, context }) => {
+  .handler(async ({ data }) => {
     const system =
       "You are a professional business communication assistant. Create a clear, professional email based on the user's purpose, audience, and selected tone. Respond ONLY with strict JSON: {\"subject\": string, \"body\": string}. The body should use real line breaks (\\n). Keep it concise and professional. Do not include markdown fences.";
     const user = `Purpose: ${data.purpose}\nAudience: ${data.audience}\nTone: ${data.tone}`;
@@ -66,17 +64,10 @@ export const generateEmail = createServerFn({ method: "POST" })
       const match = content.match(/\{[\s\S]*\}/);
       parsed = match ? JSON.parse(match[0]) : { subject: "Email", body: content };
     }
-    await context.supabase.from("activity_log").insert({
-      user_id: context.userId,
-      kind: "email",
-      title: parsed.subject || "Email generated",
-      payload: { audience: data.audience, tone: data.tone },
-    });
     return parsed;
   });
 
 export const planTasks = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => PlanInput.parse(d))
   .handler(async ({ data }) => {
     const system =
@@ -90,9 +81,8 @@ export const planTasks = createServerFn({ method: "POST" })
   });
 
 export const researchTopic = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => ResearchInput.parse(d))
-  .handler(async ({ data, context }) => {
+  .handler(async ({ data }) => {
     const system =
       "You are a research analyst. Summarize information clearly, extract key insights, and provide useful recommendations. Respond ONLY with strict JSON: {\"summary\": string, \"key_points\": string[], \"insights\": string[], \"recommendations\": string[]}. No markdown fences.";
     const user = `Topic or text to analyze:\n${data.topic}`;
@@ -107,11 +97,5 @@ export const researchTopic = createServerFn({ method: "POST" })
       const match = content.match(/\{[\s\S]*\}/);
       parsed = match ? JSON.parse(match[0]) : { summary: content, key_points: [], insights: [], recommendations: [] };
     }
-    await context.supabase.from("activity_log").insert({
-      user_id: context.userId,
-      kind: "research",
-      title: data.topic.slice(0, 80),
-      payload: { length: data.topic.length },
-    });
     return parsed as { summary: string; key_points: string[]; insights: string[]; recommendations: string[] };
   });

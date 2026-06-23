@@ -20,7 +20,7 @@ import {
 import { CalendarCheck, Plus, Loader2, Sparkles, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/_authenticated/planner")({
+export const Route = createFileRoute("/planner")({
   component: Planner,
 });
 
