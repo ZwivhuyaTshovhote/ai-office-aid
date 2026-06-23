@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 import { Toaster } from "@/components/ui/sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -82,9 +83,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "description", content: "An AI workplace productivity assistant — generate emails, plan tasks, and summarize research responsibly." },
       { name: "author", content: "WorkSmart AI" },
       { property: "og:title", content: "WorkSmart AI Assistant" },
-      { property: "og:description", content: "Generate emails, plan tasks, and summarize research with responsible AI." },
+      { property: "og:description", content: "An AI workplace productivity assistant — generate emails, plan tasks, and summarize research responsibly." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
+      { name: "twitter:title", content: "WorkSmart AI Assistant" },
+      { name: "twitter:description", content: "An AI workplace productivity assistant — generate emails, plan tasks, and summarize research responsibly." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/929822fb-8e69-49e6-9055-a974126e41df/id-preview-3fab256e--5cecad3a-2427-4183-a047-0d00e19752c1.lovable.app-1782174202237.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/929822fb-8e69-49e6-9055-a974126e41df/id-preview-3fab256e--5cecad3a-2427-4183-a047-0d00e19752c1.lovable.app-1782174202237.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -112,6 +117,16 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+
+  useEffect(() => {
+    const { data: sub } = supabase.auth.onAuthStateChange((event) => {
+      if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
+      router.invalidate();
+      if (event !== "SIGNED_OUT") queryClient.invalidateQueries();
+    });
+    return () => sub.subscription.unsubscribe();
+  }, [router, queryClient]);
 
   return (
     <QueryClientProvider client={queryClient}>
