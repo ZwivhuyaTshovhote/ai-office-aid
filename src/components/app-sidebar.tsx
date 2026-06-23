@@ -5,7 +5,6 @@ import {
   CalendarCheck,
   Search,
   ShieldCheck,
-  UserCircle,
   Sparkles,
 } from "lucide-react";
 import {
@@ -29,7 +28,6 @@ const items = [
 
 const meta = [
   { title: "AI Guidelines", url: "/guidelines", icon: ShieldCheck },
-  { title: "Profile", url: "/profile", icon: UserCircle },
 ];
 
 export function AppSidebar() {
@@ -68,7 +66,7 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
         <SidebarGroup>
-          <SidebarGroupLabel>Account</SidebarGroupLabel>
+          <SidebarGroupLabel>Resources</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {meta.map((item) => (
