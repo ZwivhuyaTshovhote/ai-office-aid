@@ -9,68 +9,68 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ResearchRouteImport } from './routes/research'
-import { Route as PlannerRouteImport } from './routes/planner'
-import { Route as GuidelinesRouteImport } from './routes/guidelines'
-import { Route as EmailRouteImport } from './routes/email'
-import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppResearchRouteImport } from './routes/_app.research'
+import { Route as AppPlannerRouteImport } from './routes/_app.planner'
+import { Route as AppGuidelinesRouteImport } from './routes/_app.guidelines'
+import { Route as AppEmailRouteImport } from './routes/_app.email'
+import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
 
-const ResearchRoute = ResearchRouteImport.update({
-  id: '/research',
-  path: '/research',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PlannerRoute = PlannerRouteImport.update({
-  id: '/planner',
-  path: '/planner',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const GuidelinesRoute = GuidelinesRouteImport.update({
-  id: '/guidelines',
-  path: '/guidelines',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EmailRoute = EmailRouteImport.update({
-  id: '/email',
-  path: '/email',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppResearchRoute = AppResearchRouteImport.update({
+  id: '/_app/research',
+  path: '/research',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppPlannerRoute = AppPlannerRouteImport.update({
+  id: '/_app/planner',
+  path: '/planner',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppGuidelinesRoute = AppGuidelinesRouteImport.update({
+  id: '/_app/guidelines',
+  path: '/guidelines',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppEmailRoute = AppEmailRouteImport.update({
+  id: '/_app/email',
+  path: '/email',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppDashboardRoute = AppDashboardRouteImport.update({
+  id: '/_app/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRoute
-  '/email': typeof EmailRoute
-  '/guidelines': typeof GuidelinesRoute
-  '/planner': typeof PlannerRoute
-  '/research': typeof ResearchRoute
+  '/dashboard': typeof AppDashboardRoute
+  '/email': typeof AppEmailRoute
+  '/guidelines': typeof AppGuidelinesRoute
+  '/planner': typeof AppPlannerRoute
+  '/research': typeof AppResearchRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRoute
-  '/email': typeof EmailRoute
-  '/guidelines': typeof GuidelinesRoute
-  '/planner': typeof PlannerRoute
-  '/research': typeof ResearchRoute
+  '/dashboard': typeof AppDashboardRoute
+  '/email': typeof AppEmailRoute
+  '/guidelines': typeof AppGuidelinesRoute
+  '/planner': typeof AppPlannerRoute
+  '/research': typeof AppResearchRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRoute
-  '/email': typeof EmailRoute
-  '/guidelines': typeof GuidelinesRoute
-  '/planner': typeof PlannerRoute
-  '/research': typeof ResearchRoute
+  '/_app/dashboard': typeof AppDashboardRoute
+  '/_app/email': typeof AppEmailRoute
+  '/_app/guidelines': typeof AppGuidelinesRoute
+  '/_app/planner': typeof AppPlannerRoute
+  '/_app/research': typeof AppResearchRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -86,59 +86,24 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/dashboard'
-    | '/email'
-    | '/guidelines'
-    | '/planner'
-    | '/research'
+    | '/_app/dashboard'
+    | '/_app/email'
+    | '/_app/guidelines'
+    | '/_app/planner'
+    | '/_app/research'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  DashboardRoute: typeof DashboardRoute
-  EmailRoute: typeof EmailRoute
-  GuidelinesRoute: typeof GuidelinesRoute
-  PlannerRoute: typeof PlannerRoute
-  ResearchRoute: typeof ResearchRoute
+  AppDashboardRoute: typeof AppDashboardRoute
+  AppEmailRoute: typeof AppEmailRoute
+  AppGuidelinesRoute: typeof AppGuidelinesRoute
+  AppPlannerRoute: typeof AppPlannerRoute
+  AppResearchRoute: typeof AppResearchRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/research': {
-      id: '/research'
-      path: '/research'
-      fullPath: '/research'
-      preLoaderRoute: typeof ResearchRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/planner': {
-      id: '/planner'
-      path: '/planner'
-      fullPath: '/planner'
-      preLoaderRoute: typeof PlannerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/guidelines': {
-      id: '/guidelines'
-      path: '/guidelines'
-      fullPath: '/guidelines'
-      preLoaderRoute: typeof GuidelinesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/email': {
-      id: '/email'
-      path: '/email'
-      fullPath: '/email'
-      preLoaderRoute: typeof EmailRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -146,16 +111,51 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/research': {
+      id: '/_app/research'
+      path: '/research'
+      fullPath: '/research'
+      preLoaderRoute: typeof AppResearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app/planner': {
+      id: '/_app/planner'
+      path: '/planner'
+      fullPath: '/planner'
+      preLoaderRoute: typeof AppPlannerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app/guidelines': {
+      id: '/_app/guidelines'
+      path: '/guidelines'
+      fullPath: '/guidelines'
+      preLoaderRoute: typeof AppGuidelinesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app/email': {
+      id: '/_app/email'
+      path: '/email'
+      fullPath: '/email'
+      preLoaderRoute: typeof AppEmailRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app/dashboard': {
+      id: '/_app/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AppDashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  DashboardRoute: DashboardRoute,
-  EmailRoute: EmailRoute,
-  GuidelinesRoute: GuidelinesRoute,
-  PlannerRoute: PlannerRoute,
-  ResearchRoute: ResearchRoute,
+  AppDashboardRoute: AppDashboardRoute,
+  AppEmailRoute: AppEmailRoute,
+  AppGuidelinesRoute: AppGuidelinesRoute,
+  AppPlannerRoute: AppPlannerRoute,
+  AppResearchRoute: AppResearchRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

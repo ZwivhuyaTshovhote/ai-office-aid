@@ -17,7 +17,7 @@ import {
 import { Loader2, Copy, RefreshCw, Mail, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/email")({
+export const Route = createFileRoute("/_app/email")({
   component: EmailGenerator,
 });
 

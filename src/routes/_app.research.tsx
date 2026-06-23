@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Loader2, Sparkles, Search, Copy, Download } from "lucide-react";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/research")({
+export const Route = createFileRoute("/_app/research")({
   component: Research,
 });
 

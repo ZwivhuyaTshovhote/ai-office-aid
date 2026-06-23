@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { ShieldCheck, Eye, AlertTriangle, UserCheck, Lock, Scale } from "lucide-react";
 
-export const Route = createFileRoute("/guidelines")({
+export const Route = createFileRoute("/_app/guidelines")({
   component: Guidelines,
 });
 
